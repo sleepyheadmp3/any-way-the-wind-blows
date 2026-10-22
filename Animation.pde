@@ -2,12 +2,13 @@
 
 class Animation {
   PImage[] images;
-  int imageCount = 8;
+  int imageCount;
   int frame;
   int w = 50;
   int h = 70;
   
-  Animation(String imagePrefix) {
+  Animation(String imagePrefix, int count) {
+    imageCount = count;
     images = new PImage[imageCount];
 
     for (int i = 0; i < imageCount; i++) {
@@ -17,7 +18,9 @@ class Animation {
   }
 
   void display(int xpos, int ypos) {
-    frame = (frame+1) % imageCount;
+    frame = frame % imageCount;
     image(images[frame], xpos, ypos);
+    frame++;
   }
+  
 }
