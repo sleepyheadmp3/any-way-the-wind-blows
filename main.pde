@@ -4,7 +4,7 @@ Serial myPort;
 String val;
 
 Animation frontW, backW, leftW, rightW, root, grow;
-PImage front;
+PImage front, bg;
 
 int maxWidth = 700;
 int maxHeight = 500;
@@ -28,10 +28,11 @@ float blowX, blowY, blowVel, blowAngle;
 void setup()
 {
   size(700, 500);
-  background(152, 179, 125);
+  pixelDensity(1);
+  bg = loadImage("assets/bg.png");
   
   printArray(Serial.list());
-  String portName = Serial.list()[8];
+  String portName = Serial.list()[2];
   println(portName);
   myPort = new Serial(this, portName, 9600);
   
@@ -49,12 +50,13 @@ void setup()
 
 
 void draw()
-{
+{  
   println(myPort.available());
   if (myPort.available() > 0) {
     val = myPort.readStringUntil('\n');
   }
   
+  // claude Sonnet 5.5
   if (blowing) {
     blowAway();
     return;
@@ -74,12 +76,11 @@ void draw()
       int y = inputs[3];
       int z = inputs[4];
       
+      // joystick pressed, plant character
       if (z == 0 || planting) {
-        // joystick pressed, plant character
-        
         if (plantFrame < 4) {
           planting = true;
-          background(152, 179, 125);
+          background(bg);
           root.display(xpos, ypos);
           plantFrame++;
         }
@@ -89,13 +90,12 @@ void draw()
         }
       }
       
+      // exists pot. input difference, grow plant
       else if (planted) {
-        // pot. input difference, grow plant
-        
         if ((p > prev + 50 || p < prev - 50) && !grew) {
           if (growFrame < 14) {
             growing = true;
-            background(152, 179, 125);
+            background(bg);
             grow.display(xpos, ypos);
             growFrame++;
           }
@@ -107,8 +107,8 @@ void draw()
           prev = p;
         }
         
+        // button pressed, blow away
         if (grew && b == 0) {
-          // button pressed, blow away
           blowing = true;
           blowX = xpos;
           blowY = ypos;
@@ -122,29 +122,26 @@ void draw()
         // show corresponding animation to direction moved
         // can only move along one axis at a time
         
+        background(bg);
+        
         if (x < 1835) {
-          background(152, 179, 125);
           xpos = (xpos - 10 + maxWidth) % maxWidth;
           leftW.display(xpos, ypos);
         }
         else if (x > 1848) {
-          background(152, 179, 125);
           xpos = (xpos + 10) % maxWidth;
           rightW.display(xpos, ypos);
         }
         else if (y < 1867) {
-          background(152, 179, 125);
           ypos = (ypos - 10 + maxHeight) % maxHeight;
           backW.display(xpos, ypos);
         }
         else if (y > 1879) {
-          background(152, 179, 125);
           ypos = (ypos + 10) % maxHeight;
           frontW.display(xpos, ypos);
         }
         else {
           // no input action, just display default
-          background(152, 179, 125);
           image(front, xpos, ypos);
         }
       } 
@@ -152,9 +149,9 @@ void draw()
   }
 }
 
-
+// claude Sonnet 5.5
 void blowAway() {
-  background(152, 179, 125);
+  background(bg);
 
   blowVel += 0.4;                              // wind picks up gradually
   blowX += blowVel;
