@@ -1,10 +1,17 @@
 # Any way the wind blows . . .
 
 ### Module 2: Interactive Devices
-This is an interactive hardware project that uses the ESP32 to read input from a joystick, potentiometer, and button. Input data is then sent to Processing, where it can be used to trigger various animations for a small orange-hooded character.
-
+This is an interactive hardware project that uses the ESP32 to read input from a joystick, potentiometer, and button. Sensor data is  sent to Processing, where it can be used to make this little guy move, grow, and blow away.
 
 https://github.com/user-attachments/assets/7a2e6d52-85f3-496c-a2aa-873e249d582c
+
+### Controls:
+- Joystick x (left / right), y (up / down): displays character walking animation in corresponding AWSD directions
+- Joystick z (press): character plants itself into the ground, locking movement
+- Potentiometer: once planted, cranking the potentiometer in either direction will progress the animation frames, and the character will sprout and grow a dandelion upon their head
+- Button press: the entire character is uprooted and drifts up, up, and away ~
+
+All assets you see are hand-drawn by me! I designed this character and drew each of the walking, planting, and growing animations in Aseprite.
 
 
 Requirements
@@ -17,30 +24,49 @@ Requirements
 - Processing 4
 
 **Hardware:**
-- LILYGO ESP32 TTGO T-Display
+- LILYGO ESP32 TTGO T-Display, with headers soldered
 - Breadboard
 - Joystick
-- Potentiometer (3 pins)
+- Potentiometer
 - Button switch
 - Assorted wires in various lengths
 
-
-### Setup and Installation
+Wiring
 ---
-1) ``git clone`` this repo and open the ``circles`` folder in Arduino
-2) Compile and upload ``circles.ino`` to the ESP32
-3) Connect battery to the back of the ESP32
-4) Decorate exterior of envelope, if desired
-5) Place the ESP32 inside of the envelope, aligning the display with the open window. Tape down the back of both the battery and the ESP32 to the inside of the envelope.
-6) Thread string through the holes in the envelope, then close and tape up the flaps
-7) Wrap the other end of the string around the popsicle stick and secure with tape
-8) Use popsicle stick and tape to hang up your display!
+The circuit should be wired following these guidelines and the Fritzing diagram below:
 
-![](./media/installation.gif)
+- `G` connected to ground on both sides of the ESP32
+- `3V` connected to the other power rail that is not ground
+- Pushbutton straddling the middle of the breadboard
+  - Wired to ground and to Pin `2`
+- Side 1 of potentiometer wired to ground, side 2 wired to the 3V power rail (that is not ground)
+  - Middle prong connected to Pin `36`
+- Joystick:
+  - `GND` to ground
+  - `+5V` to 3V power rail
+  - `VRX` to Pin `39`
+  - `VRY` to Pin `32`
+  - `SW` to Pin `33`
 
-### Design
+<img width="447" height="713" alt="fritzing_diagram" src="https://github.com/user-attachments/assets/d5273993-82d4-4348-b2cd-a0fd452b094d" />
+<img width="498" height="553" alt="breadboard" src="https://github.com/user-attachments/assets/95f49447-1c12-4626-9cbe-057ea198a68c" />
+
+
+Setup
 ---
-I thought about the theme 'transition' and how it could be emulated using modifications to the code examples in the interest of time. Using TFT_ellipse as a reference, I removed the filled ellipses and changed ``tft.drawEllipse`` to ``tft.drawCircle``. An inner for loop would draw new, larger rings continuously, mimicking rings of growing thickness. I used Arduino's ``random()`` module to randomize the radius size, spawn location, and color of each circle. The outer for loop I then set to 10 total iterations, for 10 of these expanding circles drawn on screen before clearing and beginning anew.
-<br>
+1) ``git clone`` this repo and open the ``input_setup`` folder in Arduino
+2) Compile and upload ``input_setup.ino`` to the ESP32. This will configure the sensor input data for use in Processing.
+3) Open and run ``main.pde`` in Processing. This is the primary file for our program, with ``Animation.pde`` as a class file for the Animation object. The program will pop up in a separate window, and you'll also be able to see each of the inputs manipulated in real time on Processing's serial monitor:
 
-![](./media/IMG_7453.jpeg)
+    <img width="206" height="170" alt="serial" src="https://github.com/user-attachments/assets/4b6cb842-873d-4d20-9023-bc7e9c3592e0" />
+
+Demo w/ hardware
+---
+
+https://github.com/user-attachments/assets/649adfd4-724f-46b1-94fd-c12252767401
+
+
+
+
+
+
